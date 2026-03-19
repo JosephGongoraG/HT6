@@ -2,14 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
     static Map<String, String> inventario;
     static Map<String, Integer> coleccionUsuario = new HashMap<>();
-
     public static void main(String[] args) throws Exception {
-
         Scanner sc = new Scanner(System.in);
-
         System.out.println("Seleccione implementación:");
         System.out.println("1. HashMap");
         System.out.println("2. TreeMap");
@@ -17,11 +13,8 @@ public class Main {
 
         int opcion = sc.nextInt();
         sc.nextLine();
-
         inventario = MapFactory.getMap(opcion);
-
         cargarInventario("ListadoProducto.txt");
-
         int choice;
 
         do {
@@ -36,7 +29,6 @@ public class Main {
 
             choice = sc.nextInt();
             sc.nextLine();
-
             switch (choice) {
                 case 1:
                     agregarProducto(sc);
@@ -50,13 +42,17 @@ public class Main {
                 case 4:
                     mostrarColeccion(true);
                     break;
-
+                case 5:
+                    mostrarInventario(false);
+                    break;
+                case 6:
+                    mostrarInventario(true);
+                    break;
             }
 
         } while (choice != 0);
     }
 
-    // Leer archivo
     public static void cargarInventario(String archivo) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(archivo));
         String linea;
@@ -68,8 +64,12 @@ public class Main {
 
             inventario.put(producto, categoria);
         }
-
         br.close();
+        long inicio = System.nanoTime();
+        mostrarInventario(false);
+        long fin = System.nanoTime();
+        System.out.println("Tiempo: " + (fin - inicio) + " ns");
+
     }
 
     public static void agregarProducto(Scanner sc) {
@@ -110,6 +110,17 @@ public class Main {
             int cantidad = mapa.get(producto);
 
             System.out.println(producto + " | " + categoria + " | " + cantidad);
+        }
+    }
+
+    public static void mostrarInventario(boolean ordenar) {
+        Map<String, String> mapa = inventario;
+
+        if (ordenar) {
+            mapa = new TreeMap<>(inventario);
+        }
+        for (String producto : mapa.keySet()) {
+            System.out.println(producto + " | " + mapa.get(producto));
         }
     }
 }
